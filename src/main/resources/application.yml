@@ -5,14 +5,16 @@ server:
   port: 3000
 
 spring:
-  spring:
-    datasource:
-      url: jdbc:h2:mem:mydb
-      username: sa
-      password: password
-      driverClassName: org.h2.Driver
-    jpa:
-      spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+  datasource:
+    url: jdbc:h2:file:./data/demo.db
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
 #  datasource:
 #    url: jdbc:postgresql://localhost:5432/postgres
 #    username: postgres
@@ -37,3 +39,7 @@ spring:
       static-locations: file:src/main/resources/static/
       cache:
         period: 0
+  h2:
+    console:
+      enabled: true
+      path: /h2

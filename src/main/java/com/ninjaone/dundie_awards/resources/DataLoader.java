@@ -1,26 +1,26 @@
-package com.ninjaone.dundie_awards;
+package com.ninjaone.dundie_awards.resources;
 
-import com.ninjaone.dundie_awards.model.Employee;
-import com.ninjaone.dundie_awards.model.Organization;
+import com.ninjaone.dundie_awards.AwardsCache;
+import com.ninjaone.dundie_awards.domain.DundieAward;
+import com.ninjaone.dundie_awards.domain.Employee;
+import com.ninjaone.dundie_awards.domain.Organization;
+import com.ninjaone.dundie_awards.repository.DundieAwardRepository;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.repository.OrganizationRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
 @Component
+@AllArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
     private final EmployeeRepository employeeRepository;
     private final OrganizationRepository organizationRepository;
     private final AwardsCache awardsCache;
-
-    public DataLoader(EmployeeRepository employeeRepository, OrganizationRepository organizationRepository, AwardsCache awardsCache) {
-        this.awardsCache = awardsCache;
-        this.employeeRepository = employeeRepository;
-        this.organizationRepository = organizationRepository;
-    }
+    private final DundieAwardRepository dundieAwardRepository;
 
     @Override
     public void run(String... args) {
@@ -29,6 +29,11 @@ public class DataLoader implements CommandLineRunner {
         // organizationRepository.deleteAll();
 
         if (employeeRepository.count() == 0) {
+            dundieAwardRepository.save(DundieAward.builder().id(1).name("Employee of the year").build());
+            dundieAwardRepository.save(DundieAward.builder().id(2).name("Best seller").build());
+            dundieAwardRepository.save(DundieAward.builder().id(3).name("Better dressed").build());
+            dundieAwardRepository.save(DundieAward.builder().id(4).name("More spicy person").build());
+
             Organization organizationPikashu = new Organization("Pikashu");
             organizationRepository.save(organizationPikashu);
 

@@ -1,6 +1,6 @@
 package com.ninjaone.dundie_awards;
 
-import com.ninjaone.dundie_awards.model.Activity;
+import com.ninjaone.dundie_awards.domain.Activity;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
