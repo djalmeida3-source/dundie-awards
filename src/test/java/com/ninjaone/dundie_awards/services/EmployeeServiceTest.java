@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -27,6 +29,9 @@ public class EmployeeServiceTest {
 
   @Mock
   private OrganizationRepository organizationRepository;
+
+  @Mock
+  private ApplicationEventPublisher eventPublisher;
 
   @InjectMocks
   private EmployeeService employeeService;

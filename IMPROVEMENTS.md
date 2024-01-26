@@ -1,27 +1,28 @@
 # Application Improvements
 ## Architecture on layers
 ### Controller
-- Have to use request and response dtos
+- Use of request and response dtos
 - Call only services
 ### Model
-- Entities form the application
+- Entities for the database
 ### Services
 - Has the business logic
 - Can call repositories and other services
 ### Repository
 - Perform actions with the database
 ### Suggestions
-- Use of UseCases layer from clean architecture to increase testability and increase single 
+- Use of UseCases layer from Clean Architecture to increase testability and increase single 
   responsibility principle
 - Entity layer could be the domain layer and validations could be configured there
 ## Testing
-- Adding Unit test for Service Layer
-- Added Jacoco plugin to see the coverage of the application
+- Added Unit test for Service Layer
+- Added Jacoco plugin to see the coverage of the application on report
 ### Improvement suggestions
 - If using BDD and TDD, can configure Cucumber to show coverage on unit test, integrates with Jira and 
   can leverage Living Documentation
 - Adding integration tests
-## Improvements in application
+## Improvements made on application
+- Separate business logic from controller to service layer
 - Enable h2 console to perform sql queries 
 - Added configuration to see sql statements on logs
 - Added input validation on request and GlobalExceptionHandler
@@ -33,7 +34,5 @@
 ## Other suggestions
 - Use of Liquibase to keep track of the scripts and its benefits for configuring different environments
   like local, development, qa, stage and production
-
-
-hacer una consulta usando join fetch que me traiga todo
-
+- Use of environment variables could be to connect to other APIs or set templates that change by environment
+- Use of authentication provider as Okta or Keycloak depending on the use case 
