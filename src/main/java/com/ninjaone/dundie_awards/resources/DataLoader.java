@@ -1,26 +1,30 @@
 package com.ninjaone.dundie_awards.resources;
 
 import com.ninjaone.dundie_awards.AwardsCache;
-import com.ninjaone.dundie_awards.domain.DundieAward;
-import com.ninjaone.dundie_awards.domain.Employee;
-import com.ninjaone.dundie_awards.domain.Organization;
+import com.ninjaone.dundie_awards.model.DundieAward;
+import com.ninjaone.dundie_awards.model.Employee;
+import com.ninjaone.dundie_awards.model.Organization;
 import com.ninjaone.dundie_awards.repository.DundieAwardRepository;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.repository.OrganizationRepository;
-import lombok.AllArgsConstructor;
+import java.util.Objects;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
-@AllArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
     private final EmployeeRepository employeeRepository;
     private final OrganizationRepository organizationRepository;
     private final AwardsCache awardsCache;
     private final DundieAwardRepository dundieAwardRepository;
+
+    public DataLoader(EmployeeRepository employeeRepository, OrganizationRepository organizationRepository, AwardsCache awardsCache, DundieAwardRepository dundieAwardRepository) {
+        this.employeeRepository = employeeRepository;
+        this.organizationRepository = organizationRepository;
+        this.awardsCache = awardsCache;
+        this.dundieAwardRepository = dundieAwardRepository;
+    }
 
     @Override
     public void run(String... args) {
@@ -29,10 +33,10 @@ public class DataLoader implements CommandLineRunner {
         // organizationRepository.deleteAll();
 
         if (employeeRepository.count() == 0) {
-            dundieAwardRepository.save(DundieAward.builder().id(1).name("Employee of the year").build());
-            dundieAwardRepository.save(DundieAward.builder().id(2).name("Best seller").build());
-            dundieAwardRepository.save(DundieAward.builder().id(3).name("Better dressed").build());
-            dundieAwardRepository.save(DundieAward.builder().id(4).name("More spicy person").build());
+            dundieAwardRepository.save(new DundieAward(1,"Employee of the year"));
+            dundieAwardRepository.save(new DundieAward(2,"Best seller"));
+            dundieAwardRepository.save(new DundieAward(3,"Better dressed"));
+            dundieAwardRepository.save(new DundieAward(4,"More spicy person"));
 
             Organization organizationPikashu = new Organization("Pikashu");
             organizationRepository.save(organizationPikashu);

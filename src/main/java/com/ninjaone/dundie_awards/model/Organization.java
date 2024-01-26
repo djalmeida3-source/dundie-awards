@@ -1,4 +1,4 @@
-package com.ninjaone.dundie_awards.domain;
+package com.ninjaone.dundie_awards.model;
 
 import jakarta.persistence.*;
 
