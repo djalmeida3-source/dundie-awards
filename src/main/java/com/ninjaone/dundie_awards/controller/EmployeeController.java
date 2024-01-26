@@ -2,14 +2,10 @@ package com.ninjaone.dundie_awards.controller;
 
 import com.ninjaone.dundie_awards.controller.dto.EmployeeRequestDto;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
-import com.ninjaone.dundie_awards.model.Employee;
-import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.services.EmployeeService;
 import jakarta.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +25,6 @@ public class EmployeeController {
 
   @Autowired
   private EmployeeService employeeService;
-  @Autowired
-  private EmployeeRepository employeeRepository;
 
   // get all employees
   @GetMapping()
@@ -42,8 +36,9 @@ public class EmployeeController {
   // create employee rest api
   @PostMapping("")
   @ResponseBody
-  public EmployeeResponseDto createEmployee(@Valid @RequestBody EmployeeRequestDto employee) {
-    return employeeService.createEmployee(employee);
+  public ResponseEntity<EmployeeResponseDto> createEmployee(@Valid @RequestBody EmployeeRequestDto employee) {
+    EmployeeResponseDto createdEmployee = employeeService.createEmployee(employee);
+    return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
   }
 
   // get employee by id rest api

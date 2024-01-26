@@ -7,6 +7,7 @@ import com.ninjaone.dundie_awards.listener.CommitEvent;
 import com.ninjaone.dundie_awards.model.Employee;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.repository.OrganizationRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -22,10 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class EmployeeService {
   @Autowired
   private EmployeeRepository employeeRepository;
-
   @Autowired
   private OrganizationRepository organizationRepository;
-
+  @Autowired
+  private ActivityService activityService;
   @Autowired
   private ApplicationEventPublisher eventPublisher;
 
@@ -57,7 +58,12 @@ public class EmployeeService {
 
     var createdEmployee = new EmployeeResponseDto(employeeRepository.save(employeeEntity));
 
-    publishEvent(new CommitEvent(employeeEntity, "Employee created with id: " + createdEmployee.getId()));
+    var message = "Employee created with id: " + createdEmployee.getId();
+
+    activityService.registerActivity(LocalDateTime.now(), message);
+
+    publishEvent(new CommitEvent(employeeEntity, message));
+
     return createdEmployee;
   }
 
@@ -83,7 +89,11 @@ public class EmployeeService {
       employeeEntity.updateFromDto(employee);
       var updatedEmployee = new EmployeeResponseDto(employeeRepository.save(employeeEntity));
 
-      publishEvent(new CommitEvent(employeeEntity, "Employee updated with id: " + employeeEntity.getId()));
+      var message = "Employee updated with id: " + updatedEmployee.getId();
+
+      activityService.registerActivity(LocalDateTime.now(), message);
+
+      publishEvent(new CommitEvent(employeeEntity, message));
 
       return updatedEmployee;
     } else {
@@ -96,10 +106,32 @@ public class EmployeeService {
     var optionalEmployee = employeeRepository.findById(id);
     if (optionalEmployee.isPresent()) {
       employeeRepository.delete(optionalEmployee.get());
-      publishEvent(new CommitEvent(optionalEmployee, "Employee deleted with id: " + id));
+
+      var message = "Employee deleted with id: " + id;
+
+      activityService.registerActivity(LocalDateTime.now(), message);
+
+      publishEvent(new CommitEvent(optionalEmployee, message));
+
       return Map.of("deleted", true);
     } else {
       throw new ResourceNotFoundException("Employee not found with id " + id);
     }
   }
+
+  public List<Employee> getEmployeesByOrganization(Long organizationId) {
+    return employeeRepository.findByOrganizationId(organizationId);
+  }
+
+  public List<Employee> updateEmployees(List<Employee> employees) {
+    var updatedEmployees = employeeRepository.saveAll(employees);
+
+    var message = "Employees updated size: " + updatedEmployees.size();
+
+    activityService.registerActivity(LocalDateTime.now(), message);
+
+    publishEvent(new CommitEvent(employees, message));
+    return updatedEmployees;
+  }
+
 }

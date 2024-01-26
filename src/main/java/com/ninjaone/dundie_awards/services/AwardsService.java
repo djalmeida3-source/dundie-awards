@@ -1,6 +1,9 @@
 package com.ninjaone.dundie_awards.services;
 
 import com.ninjaone.dundie_awards.AwardsCache;
+import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
+import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
+import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,5 +23,17 @@ public class AwardsService {
 
   public void updateTotalAwards() {
     awardsCache.setTotalAwards(calculateTotalAwards());
+  }
+
+  public List<EmployeeResponseDto> grantAwardByOrganization(Long organizationId, int numberOfAwards) {
+    var employees = employeeService.getEmployeesByOrganization(organizationId);
+    if (employees.isEmpty()) {
+      throw new ResourceNotFoundException("Employees not found for organization: " + organizationId);
+    }
+    employees.forEach(
+            employee -> employee.setDundieAwards(employee.getDundieAwards() + numberOfAwards));
+
+    var updatedEmployees = employeeService.updateEmployees(employees);
+    return updatedEmployees.stream().map(EmployeeResponseDto::new).toList();
   }
 }

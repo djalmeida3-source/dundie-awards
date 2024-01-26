@@ -12,7 +12,7 @@ public class EmployeeRequestDto {
   private String lastName;
   @NotNull
   private Long organizationId;
-  private Integer dundieAwards;
+  private int dundieAwards;
 
   public String getFirstName() {
     return firstName;
