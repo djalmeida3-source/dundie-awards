@@ -3,6 +3,7 @@ package com.ninjaone.dundie_awards.controller;
 import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
 import java.lang.module.ResolutionException;
 import java.util.NoSuchElementException;
+import org.hibernate.NonUniqueResultException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,6 +32,11 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(NonUniqueResultException.class)
+  public ResponseEntity<?> handleNonUniqueResultException(NonUniqueResultException ex, WebRequest request) {
+    return new ResponseEntity<>("Data inconsistency", HttpStatus.NOT_FOUND);
   }
 
 }

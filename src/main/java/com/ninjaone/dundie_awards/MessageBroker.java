@@ -18,4 +18,8 @@ public class MessageBroker {
     public List<Activity> getMessages(){
         return messages;
     }
+
+    public void clearMessages(){
+        messages.clear();
+    }
 }

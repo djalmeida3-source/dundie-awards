@@ -27,11 +27,13 @@
 - Added input validation on request and GlobalExceptionHandler
 - Added business validation on service layer like not allowing employees with the same first and last name
 - Added Logs in Main Application and EmployeeService
+- Using SpringBoot events, register on commit into Queue messages and created an endpoint to process messages
+  and create activities
+- Updating total awards using event commit listener
 ## Other suggestions
 - Use of Liquibase to keep track of the scripts and its benefits for configuring different environments
   like local, development, qa, stage and production
 
-- aplicar el publisher con lo de ChatGPT
 
-crear otra tabla y crear un nuevo servico y unir las 2 tablas
+hacer una consulta usando join fetch que me traiga todo
 
