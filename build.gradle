@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.0'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'jacoco'
 }
 
 group = 'com.ninjaone'
@@ -30,3 +31,15 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+jacoco {
+	toolVersion = "0.8.7"
+}
+
+jacocoTestReport {
+	reports {
+		html.outputLocation = layout.buildDirectory.file("jacocoHtml/index.html").get().asFile
+	}
+}
+
+check.dependsOn jacocoTestReport

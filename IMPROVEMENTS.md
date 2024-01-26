@@ -14,36 +14,24 @@
 - Use of UseCases layer from clean architecture to increase testability and increase single 
   responsibility principle
 - Entity layer could be the domain layer and validations could be configured there
-### Clean architecture structure
 ## Testing
-### Configuring Cucumber to show coverage with test application of BDD
-## Improvements flow
-- ? Validations to know required fields
-- ? Validation to not store duplicated values by name on employees and organizations
-- ? Use of Dto on controller for request and response
-- Enable h2 console
+- Adding Unit test for Service Layer
+- Added Jacoco plugin to see the coverage of the application
+### Improvement suggestions
+- If using BDD and TDD, can configure Cucumber to show coverage on unit test, integrates with Jira and 
+  can leverage Living Documentation
+- Adding integration tests
+## Improvements in application
+- Enable h2 console to perform sql queries 
 - Added configuration to see sql statements on logs
-- Use of Lombok to maintain clean code practices
-- Use of Builder pattern
-- ? Logs
+- Added input validation on request and GlobalExceptionHandler
+- Added business validation on service layer like not allowing employees with the same first and last name
+- Added Logs in Main Application and EmployeeService
+## Other suggestions
+- Use of Liquibase to keep track of the scripts and its benefits for configuring different environments
+  like local, development, qa, stage and production
 
---
-
-- Unit test services esencial, no 100%, 
-- Pruebas integracion
-- Controller Advice para excepciones mapear todas y se hagan http, como un notFound
-- Agregar exceciones customizadas con anotaciones y unas de negocio, 
-- Agrewgar dto response y request
-- En el request validar consistencia de datos 1era 
-- 2da validaci{on si Jhon Dow viene 2 veces esa es validacion de negocio
-- Eso con pruebas
-- Registrar con un campo lista para los awards
-- Quitar lombok
-- Liquibase para migraciones
-- logs
 - aplicar el publisher con lo de ChatGPT
-- Documentaci{on con pruebas no todo pero si lo importante
-- 
 
 crear otra tabla y crear un nuevo servico y unir las 2 tablas
 

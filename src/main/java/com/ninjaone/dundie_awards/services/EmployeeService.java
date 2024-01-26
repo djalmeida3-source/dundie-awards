@@ -4,16 +4,16 @@ import com.ninjaone.dundie_awards.controller.dto.EmployeeRequestDto;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
 import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
 import com.ninjaone.dundie_awards.model.Employee;
-import com.ninjaone.dundie_awards.model.Organization;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.repository.OrganizationRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeService {
@@ -23,20 +23,30 @@ public class EmployeeService {
   @Autowired
   private OrganizationRepository organizationRepository;
 
+  private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
+
   public List<EmployeeResponseDto> getAllEmployees() {
     return employeeRepository.findAll().stream()
             .map(EmployeeResponseDto::new)
             .toList();
   }
 
-  public EmployeeResponseDto createEmployee(EmployeeRequestDto employee) {
-    var organization = organizationRepository.findById(employee.getOrganizationId())
+  @Transactional
+  public EmployeeResponseDto createEmployee(EmployeeRequestDto dto) {
+    var employee = employeeRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName());
+
+    if (employee.isPresent()) {
+      throw new IllegalArgumentException("Employee already exists");
+    }
+
+    var organization = organizationRepository.findById(dto.getOrganizationId())
             .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
 
     Employee employeeEntity = new Employee();
-    employeeEntity.updateFromDto(employee);
+    employeeEntity.updateFromDto(dto);
     employeeEntity.setOrganization(organization);
-
+    logger.info("Employee created successful -> id:{} firstName:{} lastName:{}",
+            employeeEntity.getId(), employeeEntity.getFirstName(), employeeEntity.getLastName());
     return new EmployeeResponseDto(employeeRepository.save(employeeEntity));
   }
 

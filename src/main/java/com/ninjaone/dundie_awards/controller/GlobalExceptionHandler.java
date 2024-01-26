@@ -15,12 +15,12 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(NoSuchElementException.class)
   public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException ex, WebRequest request) {
-    return new ResponseEntity<>("Employee not found", HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
-    return new ResponseEntity<>("Invalid input", HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
