@@ -54,7 +54,7 @@ public class AwardsService {
             LocalDateTime.now(),
             "Granting " + numberOfAwards + " awards to organization:  " + organizationId);
 
-    publisher.publishEvent(activity);
+    publisher.publishEvent(activity, initialStateEmployees);
 
     updateTotalAwards();
 

@@ -13,6 +13,7 @@ public class ActivityService {
 
 
   public Activity registerActivity(Activity activity) {
+    // Added null to test rollback on MessageBroker
     return activityRepository.save(null);
   }
 }
