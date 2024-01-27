@@ -31,6 +31,8 @@ public class EmployeeServiceTest {
   private OrganizationRepository organizationRepository;
 
   @Mock
+  private ActivityService activityService;
+  @Mock
   private ApplicationEventPublisher eventPublisher;
 
   @InjectMocks

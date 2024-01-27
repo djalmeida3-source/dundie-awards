@@ -3,11 +3,9 @@ package com.ninjaone.dundie_awards.services;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeRequestDto;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
 import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
-import com.ninjaone.dundie_awards.listener.CommitEvent;
 import com.ninjaone.dundie_awards.model.Employee;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.repository.OrganizationRepository;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -16,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -58,18 +55,7 @@ public class EmployeeService {
 
     var createdEmployee = new EmployeeResponseDto(employeeRepository.save(employeeEntity));
 
-    var message = "Employee created with id: " + createdEmployee.getId();
-
-    activityService.registerActivity(LocalDateTime.now(), message);
-
-    publishEvent(new CommitEvent(employeeEntity, message));
-
     return createdEmployee;
-  }
-
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void publishEvent(CommitEvent event) {
-    eventPublisher.publishEvent(event);
   }
 
   public EmployeeResponseDto getEmployeeById(Long id) {
@@ -88,13 +74,6 @@ public class EmployeeService {
       var employeeEntity = optionalEmployee.get();
       employeeEntity.updateFromDto(employee);
       var updatedEmployee = new EmployeeResponseDto(employeeRepository.save(employeeEntity));
-
-      var message = "Employee updated with id: " + updatedEmployee.getId();
-
-      activityService.registerActivity(LocalDateTime.now(), message);
-
-      publishEvent(new CommitEvent(employeeEntity, message));
-
       return updatedEmployee;
     } else {
       throw new NoSuchElementException("Employee not found with id " + id);
@@ -106,13 +85,6 @@ public class EmployeeService {
     var optionalEmployee = employeeRepository.findById(id);
     if (optionalEmployee.isPresent()) {
       employeeRepository.delete(optionalEmployee.get());
-
-      var message = "Employee deleted with id: " + id;
-
-      activityService.registerActivity(LocalDateTime.now(), message);
-
-      publishEvent(new CommitEvent(optionalEmployee, message));
-
       return Map.of("deleted", true);
     } else {
       throw new ResourceNotFoundException("Employee not found with id " + id);
@@ -125,12 +97,6 @@ public class EmployeeService {
 
   public List<Employee> updateEmployees(List<Employee> employees) {
     var updatedEmployees = employeeRepository.saveAll(employees);
-
-    var message = "Employees updated size: " + updatedEmployees.size();
-
-    activityService.registerActivity(LocalDateTime.now(), message);
-
-    publishEvent(new CommitEvent(employees, message));
     return updatedEmployees;
   }
 
