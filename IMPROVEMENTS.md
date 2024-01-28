@@ -3,6 +3,7 @@
 - Start SpringBoot server
 - To test grant award rollback on failing register activity on ActivityService consider sending null
   as a way to test the error and the rollback process
+- Consider on the test a delay of 10 seconds added to improve visibly on the process
   ```
   public class ActivityService {
   ...
