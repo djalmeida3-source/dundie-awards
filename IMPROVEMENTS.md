@@ -1,4 +1,22 @@
 # Application Improvements
+## Run application
+- Start SpringBoot server
+- To test grant award rollback on failing register activity on ActivityService consider sending null
+  as a way to test the error and the rollback process
+  ```
+  public class ActivityService {
+  ...
+      activityRepository.save(null);
+  ...
+  ```
+- The endpoint is:
+  ```
+  curl --location 'http://localhost:3000/awards/grant/2' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "numberOfAwards": 3
+  }'
+  ```
 ## Architecture on layers
 ### Controller
 - Use of request and response dtos
@@ -23,14 +41,12 @@
 - Adding integration tests
 ## Improvements made on application
 - Separate business logic from controller to service layer
-- Enable h2 console to perform sql queries 
 - Added configuration to see sql statements on logs
 - Added input validation on request and GlobalExceptionHandler
 - Added business validation on service layer like not allowing employees with the same first and last name
 - Added Logs in Main Application and EmployeeService
-- Using SpringBoot events, register on commit into Queue messages and created an endpoint to process messages
-  and create activities
-- Updating total awards using event commit listener
+- Updating total awards
+- Register activity on grant awards endpoint on a separate thread and consider rollback mechanism 
 ## Other suggestions
 - Use of Liquibase to keep track of the scripts and its benefits for configuring different environments
   like local, development, qa, stage and production
