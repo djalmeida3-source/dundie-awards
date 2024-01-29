@@ -6,9 +6,7 @@ import com.ninjaone.dundie_awards.model.Activity;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.crypto.Data;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +23,10 @@ public class MessageBroker {
 
     @Async
     public void publishEvent(RestoreAwardEvent restoreAwardEvent) {
+        messages.add(new Activity(
+                LocalDateTime.now(),
+                "Restore grant award by organization event"
+        ));
         publisher.publishEvent(restoreAwardEvent);
     }
 
