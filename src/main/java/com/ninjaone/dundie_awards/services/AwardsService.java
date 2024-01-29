@@ -1,6 +1,6 @@
 package com.ninjaone.dundie_awards.services;
 
-import com.ninjaone.dundie_awards.AwardsCache;
+import com.ninjaone.dundie_awards.annotations.MyCache;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
 import com.ninjaone.dundie_awards.controller.mapper.EmployeeMapper;
 import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
@@ -10,16 +10,12 @@ import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AwardsService {
-
-  @Autowired
-  private AwardsCache awardsCache;
   @Autowired
   private EmployeeService employeeService;
   @Autowired
@@ -29,17 +25,8 @@ public class AwardsService {
   @Autowired
   private EmployeeMapper employeeMapper;
 
-  public int calculateTotalAwards() {
-    return employeeService.getAllEmployees().stream()
-            .mapToInt(employee -> Objects.requireNonNullElse(employee.getDundieAwards(), 0))
-            .sum();
-  }
-
-  public void updateTotalAwards() {
-    awardsCache.setTotalAwards(calculateTotalAwards());
-  }
-
   @Transactional
+  @MyCache
   public List<EmployeeResponseDto> grantAwardByOrganization(Long organizationId, int numberOfAwards) {
     var employees = employeeRepository.findByOrganizationId(organizationId);
     if (employees.isEmpty()) {
@@ -63,15 +50,7 @@ public class AwardsService {
             )
     );
 
-    updateTotalAwards();
-
     return employeeMapper.mapToDto(updatedEmployees);
   }
 
-
-  @Transactional
-  public void update(Map<Long, EmployeeResponseDto> initialStateEmployees) {
-    employeeService.bulkUpdateEmployees(initialStateEmployees);
-    awardsCache.setTotalAwards(calculateTotalAwards());
-  }
 }

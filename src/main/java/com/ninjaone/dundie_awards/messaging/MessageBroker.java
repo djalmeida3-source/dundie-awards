@@ -23,19 +23,18 @@ public class MessageBroker {
 
     @Async
     public void publishEvent(RestoreAwardEvent restoreAwardEvent) {
-        messages.add(new Activity(
-                LocalDateTime.now(),
-                "Restore grant award by organization event"
-        ));
+        registerQueueMessage(LocalDateTime.now(), "Restore grant award by organization event");
         publisher.publishEvent(restoreAwardEvent);
     }
 
     @Async
     public void publishEvent(NewActivityEvent newActivityEvent) {
-        messages.add(new Activity(
-            LocalDateTime.now(),
-            newActivityEvent.nameActivity()
-        ));
+        registerQueueMessage(LocalDateTime.now(), newActivityEvent.nameActivity());
         publisher.publishEvent(newActivityEvent);
+    }
+    private void registerQueueMessage(LocalDateTime localDateTime, String message) {
+        messages.add(new Activity(
+                localDateTime,
+                message));
     }
 }

@@ -1,5 +1,6 @@
 package com.ninjaone.dundie_awards.services;
 
+import com.ninjaone.dundie_awards.annotations.MyCache;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeRequestDto;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
 import com.ninjaone.dundie_awards.controller.mapper.EmployeeMapper;
@@ -85,6 +86,8 @@ public class EmployeeService {
     return true;
   }
 
+  @Transactional
+  @MyCache
   public List<EmployeeResponseDto> bulkUpdateEmployees(Map<Long, EmployeeResponseDto> initialStateEmployees) {
     return this.employeeMapper.mapToDto(
             employeeRepository.saveAll(employeeMapper.mapToEntity(new ArrayList<>(initialStateEmployees.values()))));
