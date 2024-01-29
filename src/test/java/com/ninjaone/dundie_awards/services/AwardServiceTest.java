@@ -13,7 +13,9 @@ import com.ninjaone.dundie_awards.model.Employee;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -79,7 +81,7 @@ public class AwardServiceTest {
     assertEquals(updatedEmployees.size(), 1);
   }
 
-  /* @Test
+  @Test
   public void testUpdate() {
     // Given
     Map<Long, EmployeeResponseDto> initialStateEmployees = new HashMap<>();
@@ -90,8 +92,7 @@ public class AwardServiceTest {
 
     // Then
     verify(employeeService, times(1)).bulkUpdateEmployees(initialStateEmployees);
-    verify(awardsService, times(1)).calculateTotalAwards();
-  }*/
+  }
 
   @Test
   public void testUpdateTotalAwards() {
