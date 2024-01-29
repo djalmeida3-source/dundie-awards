@@ -1,6 +1,5 @@
 package com.ninjaone.dundie_awards.messaging.subscriber;
 
-import com.ninjaone.dundie_awards.messaging.dto.RestoreAwardRequestDto;
 import com.ninjaone.dundie_awards.messaging.event.RestoreAwardEvent;
 import com.ninjaone.dundie_awards.services.AwardsService;
 import org.springframework.context.event.EventListener;
@@ -17,10 +16,8 @@ public class AwardSubscriber {
 
     @EventListener
     public void handleNewActivityEvent(RestoreAwardEvent restoreAwardEvent) {
-        awardsService.restore(
-                new RestoreAwardRequestDto(
-                        restoreAwardEvent.employees()
-                )
+        awardsService.update(
+                restoreAwardEvent.initialStateEmployees()
         );
     }
 }

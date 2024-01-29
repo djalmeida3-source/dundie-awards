@@ -5,18 +5,16 @@ import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
 import com.ninjaone.dundie_awards.controller.mapper.EmployeeMapper;
 import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
 import com.ninjaone.dundie_awards.exception.ResourceValidationException;
-import com.ninjaone.dundie_awards.model.Employee;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.repository.OrganizationRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class EmployeeService {
@@ -89,8 +87,9 @@ public class EmployeeService {
     return true;
   }
 
-  public List<EmployeeResponseDto> bulkUpdateEmployees(List<Employee> employees) {
-    return this.employeeMapper.mapToDto(employeeRepository.saveAll(employees));
+  public List<EmployeeResponseDto> bulkUpdateEmployees(Map<Long, EmployeeResponseDto> initialStateEmployees) {
+    return this.employeeMapper.mapToDto(
+            employeeRepository.saveAll(employeeMapper.mapToEntity(new ArrayList<>(initialStateEmployees.values()))));
   }
 
 }

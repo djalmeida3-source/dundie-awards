@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "employees")
-public class Employee implements Cloneable{
+public class Employee {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +31,14 @@ public class Employee implements Cloneable{
   public Employee() {
   }
 
+  public Employee(long id, String firstName, String lastName, int dundieAwards, Organization organization) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.dundieAwards = dundieAwards;
+    this.organization = organization;
+  }
+
   public Employee(String firstName, String lastName, Organization organization) {
     super();
     this.firstName = firstName;
@@ -38,18 +46,14 @@ public class Employee implements Cloneable{
     this.organization = organization;
   }
 
+  public Employee(long id, int dundieAwards) {
+    this.id = id;
+    this.dundieAwards = dundieAwards;
+  }
+
   public Employee(String firstName, String lastName) {
     this.firstName = firstName;
     this.lastName = lastName;
-  }
-
-  @Override
-  public Employee clone() {
-    try {
-      return (Employee) super.clone();
-    } catch (CloneNotSupportedException e) {
-      throw new AssertionError();
-    }
   }
 
   public long getId() {

@@ -20,7 +20,7 @@ public class ActivitySubscriber {
         activityService.registerActivity(
                 new ActivityDto(
                         newActivityEvent.nameActivity(),
-                        newActivityEvent.employees()
+                        newActivityEvent.initialStateEmployees()
                 )
         );
     }

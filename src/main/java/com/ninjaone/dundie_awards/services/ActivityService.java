@@ -29,7 +29,7 @@ public class ActivityService {
       );
     } catch (Exception ex) {
       messageBroker.publishEvent(new RestoreAwardEvent(
-              dto.employees()
+              dto.initialStateEmployees()
       ));
       throw ex;
     }

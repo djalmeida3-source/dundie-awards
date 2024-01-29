@@ -12,4 +12,11 @@ public class OrganizationMapper {
     organizationResponseDto.setName(organization.getName());
     return organizationResponseDto;
   }
+
+  public Organization mapToEntity(OrganizationResponseDto organizationResponseDto) {
+    final Organization organization = new Organization();
+    organization.setId(organizationResponseDto.getId());
+    organization.setName(organizationResponseDto.getName());
+    return organization;
+  }
 }

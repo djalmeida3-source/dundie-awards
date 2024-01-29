@@ -2,15 +2,15 @@ package com.ninjaone.dundie_awards.services;
 
 import com.ninjaone.dundie_awards.AwardsCache;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
-import com.ninjaone.dundie_awards.messaging.dto.RestoreAwardRequestDto;
+import com.ninjaone.dundie_awards.controller.mapper.EmployeeMapper;
 import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
 import com.ninjaone.dundie_awards.messaging.MessageBroker;
 import com.ninjaone.dundie_awards.messaging.event.NewActivityEvent;
-import com.ninjaone.dundie_awards.model.Employee;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +26,8 @@ public class AwardsService {
   private EmployeeRepository employeeRepository;
   @Autowired
   private MessageBroker messageBroker;
+  @Autowired
+  private EmployeeMapper employeeMapper;
 
   public int calculateTotalAwards() {
     return employeeService.getAllEmployees().stream()
@@ -44,12 +46,13 @@ public class AwardsService {
       throw new ResourceNotFoundException("Employees not found for organization: " + organizationId);
     }
 
-    List<Employee> initialStateEmployees = employees.stream()
-            .map(Employee::clone)
-            .collect(Collectors.toList());
+    Map<Long, EmployeeResponseDto> initialStateEmployees = new HashMap<>();
 
     employees.forEach(
-            employee -> employee.setDundieAwards(employee.getDundieAwards() + numberOfAwards));
+            employee -> {
+              initialStateEmployees.put(employee.getId(), employeeMapper.mapToDto(employee));
+              employee.setDundieAwards(employee.getDundieAwards() + numberOfAwards);
+            });
 
     var updatedEmployees = employeeRepository.saveAll(employees);
 
@@ -67,8 +70,8 @@ public class AwardsService {
 
 
   @Transactional
-  public void restore(RestoreAwardRequestDto restoreAwardRequestDto) {
-    employeeService.bulkUpdateEmployees(restoreAwardRequestDto.employees());
+  public void update(Map<Long, EmployeeResponseDto> initialStateEmployees) {
+    employeeService.bulkUpdateEmployees(initialStateEmployees);
     awardsCache.setTotalAwards(calculateTotalAwards());
   }
 }
