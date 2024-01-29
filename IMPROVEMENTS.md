@@ -47,7 +47,8 @@
 - Added business validation on service layer like not allowing employees with the same first and last name
 - Added Logs in Main Application and EmployeeService
 - Updating total awards
-- Register activity on grant awards endpoint on a separate thread and consider rollback mechanism 
+- Register activity on grant awards endpoint on a separate thread and consider rollback mechanism
+- Added mappers to convert entities to dtos and vice-versa
 ## Other suggestions
 - Use of Liquibase to keep track of the scripts and its benefits for configuring different environments
   like local, development, qa, stage and production
