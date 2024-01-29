@@ -6,6 +6,9 @@ public class OrganizationResponseDto {
   private long id;
   private String name;
 
+  public OrganizationResponseDto() {
+  }
+
   public OrganizationResponseDto(Organization organization) {
     this.id = organization.getId();
     this.name = organization.getName();

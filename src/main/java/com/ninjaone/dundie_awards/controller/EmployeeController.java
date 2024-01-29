@@ -5,7 +5,6 @@ import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
 import com.ninjaone.dundie_awards.services.EmployeeService;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +58,7 @@ public class EmployeeController {
   // delete employee rest api
   @DeleteMapping("/{id}")
   @ResponseBody
-  public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id) {
-    return ResponseEntity.ok(employeeService.deleteEmployee(id));
+  public Boolean deleteEmployee(@PathVariable Long id) {
+    return employeeService.deleteEmployee(id);
   }
 }

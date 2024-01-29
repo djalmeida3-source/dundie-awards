@@ -9,6 +9,9 @@ public class EmployeeResponseDto {
   private Integer dundieAwards;
   private OrganizationResponseDto organization;
 
+  public EmployeeResponseDto() {
+  }
+
   public EmployeeResponseDto(Employee employee) {
     this.id = employee.getId();
     this.firstName = employee.getFirstName();

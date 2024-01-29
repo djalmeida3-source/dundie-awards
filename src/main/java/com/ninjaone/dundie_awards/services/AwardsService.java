@@ -1,12 +1,13 @@
 package com.ninjaone.dundie_awards.services;
 
 import com.ninjaone.dundie_awards.AwardsCache;
-import com.ninjaone.dundie_awards.config.Publisher;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
+import com.ninjaone.dundie_awards.messaging.dto.RestoreAwardRequestDto;
 import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
-import com.ninjaone.dundie_awards.model.Activity;
+import com.ninjaone.dundie_awards.messaging.MessageBroker;
+import com.ninjaone.dundie_awards.messaging.event.NewActivityEvent;
 import com.ninjaone.dundie_awards.model.Employee;
-import java.time.LocalDateTime;
+import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -22,12 +23,14 @@ public class AwardsService {
   @Autowired
   private EmployeeService employeeService;
   @Autowired
-  private Publisher publisher;
+  private EmployeeRepository employeeRepository;
+  @Autowired
+  private MessageBroker messageBroker;
 
   public int calculateTotalAwards() {
     return employeeService.getAllEmployees().stream()
-      .mapToInt(employee -> Objects.requireNonNullElse(employee.getDundieAwards(), 0))
-      .sum();
+            .mapToInt(employee -> Objects.requireNonNullElse(employee.getDundieAwards(), 0))
+            .sum();
   }
 
   public void updateTotalAwards() {
@@ -36,7 +39,7 @@ public class AwardsService {
 
   @Transactional
   public List<EmployeeResponseDto> grantAwardByOrganization(Long organizationId, int numberOfAwards) {
-    var employees = employeeService.getEmployeesByOrganization(organizationId);
+    var employees = employeeRepository.findByOrganizationId(organizationId);
     if (employees.isEmpty()) {
       throw new ResourceNotFoundException("Employees not found for organization: " + organizationId);
     }
@@ -48,13 +51,14 @@ public class AwardsService {
     employees.forEach(
             employee -> employee.setDundieAwards(employee.getDundieAwards() + numberOfAwards));
 
-    var updatedEmployees = employeeService.updateEmployees(employees);
+    var updatedEmployees = employeeRepository.saveAll(employees);
 
-    Activity activity = new Activity(
-            LocalDateTime.now(),
-            "Granting " + numberOfAwards + " awards to organization:  " + organizationId);
-
-    publisher.publishEvent(activity, initialStateEmployees);
+    messageBroker.publishEvent(
+            new NewActivityEvent(
+                    "Granting %d awards to organization:  %d".formatted(numberOfAwards, organizationId),
+                    initialStateEmployees
+            )
+    );
 
     updateTotalAwards();
 
@@ -62,4 +66,9 @@ public class AwardsService {
   }
 
 
+  @Transactional
+  public void restore(RestoreAwardRequestDto restoreAwardRequestDto) {
+    employeeService.bulkUpdateEmployees(restoreAwardRequestDto.employees());
+    awardsCache.setTotalAwards(calculateTotalAwards());
+  }
 }

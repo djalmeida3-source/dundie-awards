@@ -1,6 +1,5 @@
 package com.ninjaone.dundie_awards.model;
 
-import com.ninjaone.dundie_awards.controller.dto.EmployeeRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,10 +38,9 @@ public class Employee implements Cloneable{
     this.organization = organization;
   }
 
-  public void updateFromDto(EmployeeRequestDto dto) {
-    this.firstName = dto.getFirstName();
-    this.lastName = dto.getLastName();
-    this.dundieAwards = dto.getDundieAwards();
+  public Employee(String firstName, String lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
   }
 
   @Override

@@ -2,19 +2,21 @@ package com.ninjaone.dundie_awards.services;
 
 import com.ninjaone.dundie_awards.controller.dto.EmployeeRequestDto;
 import com.ninjaone.dundie_awards.controller.dto.EmployeeResponseDto;
+import com.ninjaone.dundie_awards.controller.mapper.EmployeeMapper;
 import com.ninjaone.dundie_awards.exception.ResourceNotFoundException;
+import com.ninjaone.dundie_awards.exception.ResourceValidationException;
 import com.ninjaone.dundie_awards.model.Employee;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.repository.OrganizationRepository;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmployeeService {
@@ -22,10 +24,9 @@ public class EmployeeService {
   private EmployeeRepository employeeRepository;
   @Autowired
   private OrganizationRepository organizationRepository;
+
   @Autowired
-  private ActivityService activityService;
-  @Autowired
-  private ApplicationEventPublisher eventPublisher;
+  private EmployeeMapper employeeMapper;
 
   private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
@@ -37,67 +38,59 @@ public class EmployeeService {
 
   @Transactional
   public EmployeeResponseDto createEmployee(EmployeeRequestDto dto) {
+
+    logger.info("Creating a new Employee -> {}", dto.toString());
+
     var employee = employeeRepository.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName());
 
     if (employee.isPresent()) {
-      throw new IllegalArgumentException("Employee already exists");
+      throw new ResourceValidationException("Employee already exists");
     }
 
     var organization = organizationRepository.findById(dto.getOrganizationId())
             .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
 
-    Employee employeeEntity = new Employee();
-    employeeEntity.updateFromDto(dto);
-    employeeEntity.setOrganization(organization);
+    var newEmployee = employeeMapper.mapToEntity(dto);
+    newEmployee.setOrganization(organization);
 
-    logger.info("Employee created successful -> id:{} firstName:{} lastName:{}",
-            employeeEntity.getId(), employeeEntity.getFirstName(), employeeEntity.getLastName());
-
-    var createdEmployee = new EmployeeResponseDto(employeeRepository.save(employeeEntity));
-
-    return createdEmployee;
+    return employeeMapper.mapToDto(employeeRepository.save(newEmployee));
   }
 
   public EmployeeResponseDto getEmployeeById(Long id) {
-    var optionalEmployee = employeeRepository.findById(id);
-    if (optionalEmployee.isPresent()) {
-      return new EmployeeResponseDto(optionalEmployee.get());
-    } else {
-      throw new NoSuchElementException("Employee not found with id " + id);
-    }
+    var employee = employeeRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+    return this.employeeMapper.mapToDto(employee);
   }
 
   @Transactional
-  public EmployeeResponseDto updateEmployee(Long id, EmployeeRequestDto employee) {
-    var optionalEmployee = employeeRepository.findById(id);
-    if (optionalEmployee.isPresent()) {
-      var employeeEntity = optionalEmployee.get();
-      employeeEntity.updateFromDto(employee);
-      var updatedEmployee = new EmployeeResponseDto(employeeRepository.save(employeeEntity));
-      return updatedEmployee;
-    } else {
-      throw new NoSuchElementException("Employee not found with id " + id);
-    }
+  public EmployeeResponseDto updateEmployee(Long id, EmployeeRequestDto dto) {
+    var currentEmployee = employeeRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+
+    var organization = organizationRepository.findById(dto.getOrganizationId())
+            .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
+
+    currentEmployee.setFirstName(dto.getFirstName());
+    currentEmployee.setLastName(dto.getLastName());
+    currentEmployee.setDundieAwards(dto.getDundieAwards());
+    currentEmployee.setOrganization(organization);
+
+    return employeeMapper.mapToDto(employeeRepository.save(currentEmployee));
   }
 
   @Transactional
-  public Map<String, Boolean> deleteEmployee(Long id) {
-    var optionalEmployee = employeeRepository.findById(id);
-    if (optionalEmployee.isPresent()) {
-      employeeRepository.delete(optionalEmployee.get());
-      return Map.of("deleted", true);
-    } else {
-      throw new ResourceNotFoundException("Employee not found with id " + id);
-    }
+  public Boolean deleteEmployee(Long id) {
+    var currentEmployee = employeeRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+    employeeRepository.delete(currentEmployee);
+    return true;
   }
 
-  public List<Employee> getEmployeesByOrganization(Long organizationId) {
-    return employeeRepository.findByOrganizationId(organizationId);
-  }
-
-  public List<Employee> updateEmployees(List<Employee> employees) {
-    var updatedEmployees = employeeRepository.saveAll(employees);
-    return updatedEmployees;
+  public List<EmployeeResponseDto> bulkUpdateEmployees(List<Employee> employees) {
+    return this.employeeMapper.mapToDto(employeeRepository.saveAll(employees));
   }
 
 }
