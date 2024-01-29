@@ -65,7 +65,7 @@ public class AwardsService {
 
     updateTotalAwards();
 
-    return updatedEmployees.stream().map(EmployeeResponseDto::new).toList();
+    return employeeMapper.mapToDto(updatedEmployees);
   }
 
 

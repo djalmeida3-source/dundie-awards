@@ -51,6 +51,7 @@ public class EmployeeServiceTest {
     Employee employee = new Employee();
     employee.setOrganization(new Organization());
     when(employeeRepository.findAll()).thenReturn(List.of(employee));
+    when(employeeMapper.mapToDto((List<Employee>) any())).thenReturn(List.of(new EmployeeResponseDto()));
 
     List<EmployeeResponseDto> employees = employeeService.getAllEmployees();
     assertEquals(1, employees.size());

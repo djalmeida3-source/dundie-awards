@@ -29,9 +29,7 @@ public class EmployeeService {
   private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
   public List<EmployeeResponseDto> getAllEmployees() {
-    return employeeRepository.findAll().stream()
-            .map(EmployeeResponseDto::new)
-            .toList();
+    return employeeMapper.mapToDto(employeeRepository.findAll());
   }
 
   @Transactional

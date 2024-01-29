@@ -12,12 +12,12 @@ public class EmployeeResponseDto {
   public EmployeeResponseDto() {
   }
 
-  public EmployeeResponseDto(Employee employee) {
-    this.id = employee.getId();
-    this.firstName = employee.getFirstName();
-    this.lastName = employee.getLastName();
-    this.dundieAwards = employee.getDundieAwards();
-    this.organization = new OrganizationResponseDto(employee.getOrganization());
+  public EmployeeResponseDto(long id, String firstName, String lastName, Integer dundieAwards, OrganizationResponseDto organization) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.dundieAwards = dundieAwards;
+    this.organization = organization;
   }
 
   public long getId() {
