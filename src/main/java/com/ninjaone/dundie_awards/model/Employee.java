@@ -51,9 +51,10 @@ public class Employee {
     this.dundieAwards = dundieAwards;
   }
 
-  public Employee(String firstName, String lastName) {
+  public Employee(String firstName, String lastName, int dundieAwards) {
     this.firstName = firstName;
     this.lastName = lastName;
+    this.dundieAwards = dundieAwards;
   }
 
   public long getId() {

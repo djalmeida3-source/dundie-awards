@@ -34,6 +34,7 @@ public class EmployeeService {
   }
 
   @Transactional
+  @MyCache
   public EmployeeResponseDto createEmployee(EmployeeRequestDto dto) {
 
     logger.info("Creating a new Employee -> {}", dto.toString());
@@ -61,6 +62,7 @@ public class EmployeeService {
   }
 
   @Transactional
+  @MyCache
   public EmployeeResponseDto updateEmployee(Long id, EmployeeRequestDto dto) {
     var currentEmployee = employeeRepository
             .findById(id)
@@ -78,6 +80,7 @@ public class EmployeeService {
   }
 
   @Transactional
+  @MyCache
   public Boolean deleteEmployee(Long id) {
     var currentEmployee = employeeRepository
             .findById(id)

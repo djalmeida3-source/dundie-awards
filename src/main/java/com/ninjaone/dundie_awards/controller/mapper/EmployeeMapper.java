@@ -18,7 +18,8 @@ public class EmployeeMapper {
     public Employee mapToEntity(EmployeeRequestDto employeeRequestDto) {
         return new Employee(
                 employeeRequestDto.getFirstName(),
-                employeeRequestDto.getLastName()
+                employeeRequestDto.getLastName(),
+                employeeRequestDto.getDundieAwards()
                 );
     }
 
